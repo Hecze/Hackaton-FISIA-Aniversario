@@ -1,0 +1,58 @@
+/* styles.css */
+
+
+
+.chart {
+  padding: 6rem 2.5rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 8px;
+  
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+td.delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+td img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.delete {
+  cursor: pointer;
+  background-color:  var(--var--background-red);
+}
+
+.delete h1{
+  color: var(--var-color-red);
+}
+
+.add-seccion{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: .5rem 0;
+  background-color: var(--var--background-green);
+  color: var(--var-color-green);
+}
+
+.add-seccion-span{
+  background-color: rgba(8, 8, 8, 0.425);
+}

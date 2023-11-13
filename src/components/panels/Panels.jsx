@@ -6,13 +6,15 @@ import "./Panels.css";
 export function Panels() {
   const datosPrueba = [
     {
-      name: "Matemáticas",
+      name: "Programación y Computación",
       secciones: {
         "1": {
+          id: "asddas85888d",
           horario: "Lunes 8:00 AM",
           aula: "101",
         },
         "2": {
+          id: "asdda000sd",
           horario: "Martes 10:00 AM",
           aula: "102",
         }
@@ -21,13 +23,67 @@ export function Panels() {
       
    
     {
-      name: "Historia",
+      name: "Algorítmica I",
       secciones: {
         "1": {
+          id: "asddasd",
           horario: "Lunes 8:00 AM",
           aula: "101",
         },
         "2": {
+          id: "asddassdd",
+          horario: "Martes 10:00 AM",
+          aula: "102",
+        },
+        "3": {
+          id: "asddas554d",
+          horario: "Lunes 8:00 AM",
+          aula: "101",
+        },
+        
+      },
+    },
+    {
+      name: "Sistemas Operativos",
+      secciones: {
+        "1": {
+          id: "asddasd84sws",
+          horario: "Lunes 8:00 AM",
+          aula: "101",
+        },
+        "2": {
+          id: "asddasas6dd",
+          horario: "Martes 10:00 AM",
+          aula: "102",
+        }
+      },
+    },
+    {
+      name: "Cálculo II",
+      secciones: {
+        
+        "1": {
+          id: "asddas654sd",
+          horario: "Lunes 8:00 AM",
+          aula: "101",
+        },
+        "2": {
+          id: "asddas965ssd",
+          horario: "Martes 10:00 AM",
+          aula: "102",
+        }
+      },
+    },
+    {
+      name: "Redacción y Tecnicas de Comunicación Efectiva",
+      secciones: {
+        "1": {
+          id: "asdda54625626sd",
+          horario: "Lunes 8:00 AM",
+          aula: "101",
+        },
+        "2": {
+          id: "asddass699d",
           horario: "Martes 10:00 AM",
           aula: "102",
         }

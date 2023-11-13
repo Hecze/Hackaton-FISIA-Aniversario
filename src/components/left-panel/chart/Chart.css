@@ -10,7 +10,7 @@ thead tr th{
 
 
 .chart {
-  padding: 6rem 2.5rem;
+  padding: 6rem 1.5rem 6rem 3rem;
 }
 
 table {
@@ -24,6 +24,25 @@ td {
   text-align: center;
   padding: 8px;
   
+}
+
+tr.asignatura {
+  min-height: 35rem;
+  background-color: rgba(175, 146, 149, 0.439);
+
+}
+
+tr.asignatura td {
+  text-align: center;
+  width: 40%;
+}
+
+tr.asignatura p{
+  text-wrap: wrap;
+  width: 100%;
+  text-align: center;
+  letter-spacing: .7px;
+  padding: 0 .8rem;
 }
 
 th {
@@ -43,6 +62,7 @@ td img {
 
 .delete {
   cursor: pointer;
+  padding:.5rem .7rem;
   background-color:  var(--var--background-red);
   transition: .1s;
 }

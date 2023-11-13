@@ -1,8 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "./Chart.css";
 
+
 export default function Chart({ datos }) {
   const [nuevoHorario, setNuevoHorario] = useState(""); // Estado para almacenar el nuevo horario
+  const [asignaturas, setAsignaturas] = useState(datos);
+  const [idSelected, setIdSelected] = useState("");
+  const { v4: uuidv4 } = require('uuid');
+
+
+  const randomId = () => {
+    return uuidv4();
+  };
+
+  const searchId = (seccion) => {
+    setIdSelected(seccion.id);
+  };
+
+
+
+  // Generar un nuevo ID aleatorio
 
   // Función para manejar el cambio en el select de horarios
   const handleHorarioChange = (e) => {
@@ -31,6 +48,51 @@ export default function Chart({ datos }) {
     "Miércoles 2:00-6:00",
     /*... más opciones ...*/ "Agregar horario",
   ];
+
+  const agregarSeccion = (asignatura_input, horario = "xd") => {
+    const nuevaSeccion = {
+      id: randomId(),
+      horario: horario,
+      aula: "",
+    };
+  
+    // Buscar asignatura.name de Asignaturas y agregarle la nueva sección
+  
+    const asignaturasActualizadas = asignaturas.map((asignatura) => {
+      if (asignatura.name === asignatura_input.name) {
+        return {
+          ...asignatura,
+          secciones: {
+            ...asignatura.secciones,
+            [Object.keys(asignatura.secciones).length + 1]: nuevaSeccion,
+          },
+        };
+      } else {
+        return asignatura; // Devolver la asignatura sin modificar
+      }
+    });
+  
+    console.log(asignaturasActualizadas);
+    setAsignaturas(asignaturasActualizadas);
+  };
+  
+
+  const eliminarSeccion = (seccion) => {
+
+    searchId(seccion);
+    //buscar en todas las asignaturas todas sus secciones y eliminar la que tenga la id seleccionada
+    const asignaturasActualizadas = asignaturas.map((asignatura) => {
+      return {
+        ...asignatura,
+        secciones: Object.values(asignatura.secciones).filter(
+          (seccion) => seccion.id !== idSelected
+        ),
+      };
+    });
+    setAsignaturas(asignaturasActualizadas);
+
+  };
+
   var aulasOptionsAP = [
     ...Array(3)
       .fill()
@@ -61,46 +123,53 @@ export default function Chart({ datos }) {
           </tr>
         </thead>
         <tbody>
-          {datos.map((asignatura, index) => (
+          {asignaturas.map((asignatura, index) => (
             <React.Fragment key={index}>
-              <tr>
+              <tr className="asignatura">
                 <td rowSpan={Object.values(asignatura.secciones).length + 2}>
-                  {asignatura.name}
+                  <p>{asignatura.name}</p>
                 </td>
               </tr>
 
-              {Object.values(asignatura.secciones).map((seccion, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td className="desplegable">
-                    {seccion.horario ? (
-                    <select  onChange={handleHorarioChange}>
-                    {horariosOptions.map((option, i) => (
-                      <option key={i} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                    ) : (
-                      <div className="add-horario" />
-                    )}
-                  </td>
-                  <td className="desplegable">
-                    <select>
-                      {aulasOptions.map((option, i) => (
-                        <option key={i} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="delete">
-                    <h3>x</h3>
-                  </td>
-                </tr>
-              ))}
+              {Object.values(asignatura.secciones).map(
+                (seccion, index) =>
+                  seccion && (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td className="desplegable">
+                        {seccion.horario ? (
+                          <select onChange={handleHorarioChange}>
+                            {horariosOptions.map((option, i) => (
+                              <option key={i} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <div className="add-horario" />
+                        )}
+                      </td>
+                      <td className="desplegable">
+                        <select>
+                          {aulasOptions.map((option, i) => (
+                            <option key={i} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td
+                        className="delete"
+                        onClick={() => eliminarSeccion(seccion)}
+                      >
+                        <h3>x</h3>
+                      </td>
+                    </tr>
+                  )
+              )}
+
               <tr>
-                <td className="add-seccion">
+                <td className="add-seccion" onClick={() => agregarSeccion(asignatura)}>
                   <h2>+</h2>
                 </td>
                 <td colSpan="3" className="add-seccion-span"></td>

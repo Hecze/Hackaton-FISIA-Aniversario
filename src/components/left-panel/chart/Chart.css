@@ -1,5 +1,12 @@
 /* styles.css */
 
+thead tr th{
+  background-color: var(--var-color-red);
+  color: #fafafa;
+  padding: .8rem 0;
+  font-size: .9rem;
+}
+
 
 
 .chart {
@@ -37,9 +44,17 @@ td img {
 .delete {
   cursor: pointer;
   background-color:  var(--var--background-red);
+  transition: .1s;
 }
 
-.delete h1{
+.delete:hover{
+  filter: contrast(1.3);
+  box-shadow: 0 0 0rem 0 rgba(0, 0, 0, 0.4);
+}
+
+
+
+.delete h3{
   color: var(--var-color-red);
 }
 
@@ -51,8 +66,42 @@ td img {
   padding: .5rem 0;
   background-color: var(--var--background-green);
   color: var(--var-color-green);
+  cursor: pointer;
+  transition: .15s;
+
+}
+
+.add-seccion:hover{
+  filter: brightness(1.1);
+  box-shadow: 0 0 0rem 0 rgba(0, 0, 0, 0.4);
 }
 
 .add-seccion-span{
   background-color: rgba(8, 8, 8, 0.425);
+}
+
+.desplegable {
+  padding: 0;
+  transition: .2s;
+}
+
+.desplegable select {
+  height: 100%;
+  padding: .5rem 1rem;
+  border: none;
+  cursor: pointer;
+  transition: .2s;
+
+}
+
+.desplegable:hover{
+  background-color: rgba(18, 72, 189, 0.288);
+}
+
+.desplegable:hover select{
+  background-color: rgba(18, 72, 189, 0);
+}
+
+.desplegable select:focus {
+  outline: none;
 }

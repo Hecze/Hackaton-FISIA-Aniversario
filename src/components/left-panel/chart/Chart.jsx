@@ -2,41 +2,51 @@ import React, { useState, useEffect } from "react";
 import "./Chart.css";
 
 export default function Chart({ datos }) {
-  const [nuevosHorarios, setNuevosHorarios] = useState({}); // Estado para almacenar los nuevos horarios por sección
+  const [nuevoHorario, setNuevoHorario] = useState(""); // Estado para almacenar el nuevo horario
 
-  const horariosOptions = ["Seleccionar horario", "Lunes 8:00-12:00", "Viernes 8:00-12:00", "Miércoles 2:00-6:00", "Agregar horario"];
-  var aulasOptionsAP = [...Array(3).fill().map((_, i) => Array.from({ length: 9 }, (_, j) => `${i + 1}0${j + 1}`))].flat();
-  var aulasOptionsNP = [...Array(3).fill().map((_, i) => Array.from({ length: 9 }, (_, j) => `${i + 1}0${j + 1}`))].flat();
-  var aulasOptionsAP = aulasOptionsAP.flatMap((aula) => [`${aula} AP`]);
-  var aulasOptionsNP = aulasOptionsNP.flatMap((aula) => [`${aula} NP`]);
-  const aulasOptions = aulasOptionsAP.concat(aulasOptionsNP);
+  // Función para manejar el cambio en el select de horarios
+  const handleHorarioChange = (e) => {
+    const seleccionado = e.target.value;
 
-  // Función para manejar el cambio en el select de horarios por sección
-  const handleHorarioChange = (seccion, seleccionado) => {
     if (seleccionado === "Agregar horario") {
       // Llamar a tu función para agregar horario
-      agregarNuevoHorario(seccion);
-    } else {
-      // Actualizar el estado de los nuevos horarios solo para la sección específica
-      setNuevosHorarios((prevHorarios) => ({
-        ...prevHorarios,
-        [seccion]: seleccionado,
-      }));
+      agregarNuevoHorario();
     }
   };
 
-  // Función para agregar un nuevo horario por sección
-  const agregarNuevoHorario = (seccion) => {
+  // Función para agregar un nuevo horario
+  const agregarNuevoHorario = () => {
     // Lógica de tu función para agregar horario
     // Por ejemplo, podrías abrir un modal para ingresar el nuevo horario
-    console.log(`Llamar a tu función para agregar horario en la sección ${seccion} aquí`);
+    console.log("Llamar a tu función para agregar horario aquí");
 
-    // También podrías limpiar la selección del select para esa sección
-    setNuevosHorarios((prevHorarios) => ({
-      ...prevHorarios,
-      [seccion]: "",
-    }));
+    // También podrías limpiar la selección del select
+    setNuevoHorario("");
   };
+
+  const horariosOptions = [
+    "Seleccionar horario",
+    "Lunes 8:00-12:00",
+    "Viernes 8:00-12:00",
+    "Miércoles 2:00-6:00",
+    /*... más opciones ...*/ "Agregar horario",
+  ];
+  var aulasOptionsAP = [
+    ...Array(3)
+      .fill()
+      .map((_, i) => Array.from({ length: 9 }, (_, j) => `${i + 1}0${j + 1}`)),
+  ].flat();
+
+  var aulasOptionsNP = [
+    ...Array(3)
+      .fill()
+      .map((_, i) => Array.from({ length: 9 }, (_, j) => `${i + 1}0${j + 1}`)),
+  ].flat();
+
+  // Duplicar la lista de aulas y concatenar "AP" y "NP"
+  var aulasOptionsAP = aulasOptionsAP.flatMap((aula) => [`${aula} AP`]);
+  var aulasOptionsNP = aulasOptionsNP.flatMap((aula) => [`${aula} NP`]);
+  const aulasOptions = aulasOptionsAP.concat(aulasOptionsNP);
 
   return (
     <div className="chart">
@@ -62,23 +72,20 @@ export default function Chart({ datos }) {
               {Object.values(asignatura.secciones).map((seccion, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>
+                  <td className="desplegable">
                     {seccion.horario ? (
-                      <select
-                        value={nuevosHorarios[seccion] || ""}
-                        onChange={(e) => handleHorarioChange(seccion, e.target.value)}
-                      >
-                        {horariosOptions.map((option, i) => (
-                          <option key={i} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                    <select  onChange={handleHorarioChange}>
+                    {horariosOptions.map((option, i) => (
+                      <option key={i} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
                     ) : (
                       <div className="add-horario" />
                     )}
                   </td>
-                  <td>
+                  <td className="desplegable">
                     <select>
                       {aulasOptions.map((option, i) => (
                         <option key={i} value={option}>
@@ -88,7 +95,7 @@ export default function Chart({ datos }) {
                     </select>
                   </td>
                   <td className="delete">
-                    <h1>x</h1>
+                    <h3>x</h3>
                   </td>
                 </tr>
               ))}

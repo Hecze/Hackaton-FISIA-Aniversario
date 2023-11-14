@@ -6,6 +6,8 @@ export default function Chart({ datos }) {
   const [nuevoHorario, setNuevoHorario] = useState(""); // Estado para almacenar el nuevo horario
   const [asignaturas, setAsignaturas] = useState(datos);
   const [idSelected, setIdSelected] = useState("");
+  const [modalHorario, setModalHorario] = useState(false);
+  const [asignaturaSelected, setAsignaturaSelected] = useState("");
   const { v4: uuidv4 } = require('uuid');
 
 
@@ -24,12 +26,23 @@ export default function Chart({ datos }) {
   // Función para manejar el cambio en el select de horarios
   const handleHorarioChange = (e) => {
     const seleccionado = e.target.value;
+    const desplegarModalHorario= () => {
+
+      setModalHorario(true);
+    };
+  
 
     if (seleccionado === "Agregar horario") {
       // Llamar a tu función para agregar horario
-      agregarNuevoHorario();
+      desplegarModalHorario();
     }
   };
+
+  const handleClickAsignatura = (asignatura) => {
+    /* guardar en asignatureSelected el nombre del id del div al que se le hizo click*/
+    console.log(asignatura.name);
+  };
+
 
   // Función para agregar un nuevo horario
   const agregarNuevoHorario = () => {
@@ -55,6 +68,7 @@ export default function Chart({ datos }) {
       horario: horario,
       aula: "",
     };
+
   
     // Buscar asignatura.name de Asignaturas y agregarle la nueva sección
   
@@ -111,7 +125,18 @@ export default function Chart({ datos }) {
   const aulasOptions = aulasOptionsAP.concat(aulasOptionsNP);
 
   return (
+
     <div className="chart">
+      {modalHorario && (
+        <div className="modalHorario-container">
+          <div className="modalHorario">
+            <div className="title">
+            <h5>{asignaturaSelected}
+              </h5>
+            </div>
+          </div>
+        </div>
+      )}
       <table>
         <thead>
           <tr>
@@ -125,8 +150,8 @@ export default function Chart({ datos }) {
         <tbody>
           {asignaturas.map((asignatura, index) => (
             <React.Fragment key={index}>
-              <tr className="asignatura">
-                <td rowSpan={Object.values(asignatura.secciones).length + 2}>
+              <tr className="asignatura" >
+                <td rowSpan={Object.values(asignatura.secciones).length + 2} >
                   <p>{asignatura.name}</p>
                 </td>
               </tr>
@@ -138,7 +163,7 @@ export default function Chart({ datos }) {
                       <td>{index + 1}</td>
                       <td className="desplegable">
                         {seccion.horario ? (
-                          <select onChange={handleHorarioChange}>
+                          <select onChange={handleHorarioChange}  onClick={() => handleClickAsignatura(asignatura)}>
                             {horariosOptions.map((option, i) => (
                               <option key={i} value={option}>
                                 {option}
@@ -150,7 +175,7 @@ export default function Chart({ datos }) {
                         )}
                       </td>
                       <td className="desplegable">
-                        <select>
+                        <select onClick={() => handleClickAsignatura(asignatura)}>
                           {aulasOptions.map((option, i) => (
                             <option key={i} value={option}>
                               {option}

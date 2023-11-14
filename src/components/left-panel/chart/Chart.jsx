@@ -1,14 +1,83 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./Chart.css";
 
 export default function Chart({ datos }) {
   const [nuevoHorario, setNuevoHorario] = useState(""); // Estado para almacenar el nuevo horario
   const [asignaturas, setAsignaturas] = useState(datos);
+
+  const [allCursos, setAllCursos] = useState([]); // Todos los cursos de la BD // solo se aplica cuando se selecciona la opcion: mostrar todos
+  const [mallaCursos, setMallaCursos] = useState([]); // Cursos de la malla seleccionada // no aplica si se selecciona la opcion: mostrar todos
+  const [visualCursos, setVisualCursos] = useState([]); // Cursos que se muestran
+
   const [idSelected, setIdSelected] = useState("");
   const [modalHorario, setModalHorario] = useState(false);
   const [asignaturaSelected, setAsignaturaSelected] = useState("");
   const { v4: uuidv4 } = require("uuid");
 
+  const [escuelaSelected, setEscuelaSelected] = useState(
+    "Ingeniería de Software"
+  );
+  const [planesAñoSelected, setPlanesAñoSelected] = useState([]);
+  const [id_mallaSelected, setID_MallaSelected] = useState(1);
+  const [cursos, setCursos] = useState([]);
+
+  //CODIGO NUEVO
+
+  const deducir_idMalla = () => {
+    if (escuelaSelected == "Ingeniería de Software") {
+      if (planesAñoSelected == "2011") {
+        setID_MallaSelected(1);
+      } else if (planesAñoSelected == "2015") {
+        setID_MallaSelected(2);
+      } else if (planesAñoSelected == "2018") {
+        setID_MallaSelected(3);
+      } else if (planesAñoSelected == "2023") {
+        setID_MallaSelected(4);
+      }
+    } else if (escuelaSelected == "Ingeniería de Sistemas") {
+      if (planesAñoSelected == "2011") {
+        setID_MallaSelected(5);
+      } else if (planesAñoSelected == "2015") {
+        setID_MallaSelected(6);
+      } else if (planesAñoSelected == "2018") {
+        setID_MallaSelected(7);
+      } else if (planesAñoSelected == "2023") {
+        setID_MallaSelected(8);
+      }
+    }
+
+    async function loadMalla() {
+      const result = await axios.get("http://localhost:3000/api/planes");
+      return result.data.result;
+    }
+  };
+
+  async function loadCursos() {
+    async function loadAsignaturas() {
+      const result = await axios.get("http://localhost:3000/api/cursos");
+      return result.data.result;
+    }
+
+    const asignaturas = await loadAsignaturas();
+
+    const filteredAsignaturas = asignaturas.filter(
+      (asignatura) => asignatura.id_plan_estudios === id_mallaSelected
+    );
+
+    setAllCursos(asignaturas);
+    setMallaCursos(filteredAsignaturas);
+  }
+
+  async function loadSecciones(id_curso) {
+    var result = await axios.get(
+      "http://localhost:3000/api/secciones/" + id_curso
+    );
+    return result.data;
+  }
+
+
+  //CODIGO ANTIGUOOO
   const randomId = () => {
     return uuidv4();
   };
@@ -125,7 +194,9 @@ export default function Chart({ datos }) {
           <div className="modalHorario">
             <div className="modalHorario-header">
               <hp>{asignaturaSelected}</hp>
-              <h4 className="close" onClick={handleCloseModal}>x</h4>
+              <h4 className="close" onClick={handleCloseModal}>
+                x
+              </h4>
             </div>
           </div>
         </div>

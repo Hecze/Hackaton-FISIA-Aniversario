@@ -159,3 +159,28 @@ td img {
   background-color: #ddd;
   border-radius: 5px;
 }
+
+.modalHorario-container .modalHorario .modalHorario-header{
+  width: 100%;
+  height: 5rem;
+  background-color: var(--var-color-red);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px 5px 0 0;
+  color: #fafafa;
+  font-size: 1.3rem;
+  letter-spacing: .6px;
+  text-align: center;
+  padding: 0 1rem 0 2rem;
+}
+
+.modalHorario-container .modalHorario .modalHorario-header h4{
+  font-size: 2rem;
+  font-weight: 500;
+  margin-top: -.4rem;
+  margin-right: -.3rem;
+  cursor: pointer;
+  padding: .8rem 1rem;
+  
+}

@@ -3,25 +3,27 @@ import axios from "axios";
 import "./Chart.css";
 
 export default function Chart({ datos }) {
-  const [nuevoHorario, setNuevoHorario] = useState(""); // Estado para almacenar el nuevo horario
-  const [asignaturas, setAsignaturas] = useState(datos);
+  //DESPLIEGUE DE CURSOS Y SECCIONES
+
+  const [asignaturaSelected, setAsignaturaSelected] = useState(); // Almacena la asignatura seleccionada para mostrarla en el modal de creacion de horario
+
+  const [planesAñoSelected, setPlanesAñoSelected] = useState(2018); //se llama en la funcion deducir malla, almacena el estado del año seleccionado
+  const [escuelaSelected, setEscuelaSelected] = useState(""); //se llama en la funcion deducir malla, almacena el estado de la escuela seleccionada
+  const [id_mallaSelected, setID_MallaSelected] = useState(1); //se deduce a partir de la escuela y el año seleccionado, se usa para filtrar los cursos de la malla seleccionada
 
   const [allCursos, setAllCursos] = useState([]); // Todos los cursos de la BD // solo se aplica cuando se selecciona la opcion: mostrar todos
   const [mallaCursos, setMallaCursos] = useState([]); // Cursos de la malla seleccionada // no aplica si se selecciona la opcion: mostrar todos
   const [visualCursos, setVisualCursos] = useState([]); // Cursos que se muestran
 
-  const [secciones, setSecciones] = useState(); // Secciones de la malla
+  const [secciones, setSecciones] = useState(); // Secciones de visual cursos
 
-  const [idSelected, setIdSelected] = useState("");
-  const [modalHorario, setModalHorario] = useState(false);
-  const [asignaturaSelected, setAsignaturaSelected] = useState();
-  const [escuelaSelected, setEscuelaSelected] = useState(
-    "Ingeniería de Software"
-  );
-  const [planesAñoSelected, setPlanesAñoSelected] = useState(2018); //se llama en la funcion deducir malla, almacena el estado del año seleccionado
-  const [id_mallaSelected, setID_MallaSelected] = useState(1);
+  //CONFIGURACION DE HORARIOS
 
-  const [actualizar, setActualizar] = useState(false);
+  const [modalHorario, setModalHorario] = useState(false); //Maneja si desplegar el modal de creacion de nuevo horario o no ( se activa cuando de hace click en agregar horario)
+  const [nuevoHorario, setNuevoHorario] = useState(""); // Estado para almacenar el nuevo horario
+
+  //Actualizar Frontend
+  const [actualizar, setActualizar] = useState(false); //se usa para actualizar la tabla cuando se agrega o elimina una seccion (llama a la base de datos)
 
   //CODIGO NUEVO
 
@@ -29,18 +31,16 @@ export default function Chart({ datos }) {
     loadAllCursos();
     loadAllSecciones();
     setActualizar(false);
-  }, [actualizar]);
+  }, [actualizar]); //actualizar tabla cuando se agrega o elimina una seccion
 
   useEffect(() => {
     setVisualCursos(mallaCursos);
-  }, [mallaCursos]);
+  }, [mallaCursos]); //actualizar tabla cuando se cambia de malla en el select
 
   async function loadAllCursos() {
     const result = await axios.get("http://localhost:3000/api/cursos");
     setAllCursos(result.data.result);
   }
-
-  //loadCursos sin api
 
   async function loadCursosMalla() {
     const deducir_idMalla = () => {
@@ -64,11 +64,6 @@ export default function Chart({ datos }) {
         } else if (planesAñoSelected == "2023") {
           setID_MallaSelected(8);
         }
-      }
-
-      async function loadMalla() {
-        const result = await axios.get("http://localhost:3000/api/planes");
-        return result.data.result;
       }
     };
 
@@ -149,7 +144,7 @@ export default function Chart({ datos }) {
 
   //CODIGO ANTIGUOOO
 
-  // Función para manejar el cambio en el select de horarios
+  // Función para manejar el cambio en el select de horarios, despliega el modal de creación de horario si se selecciona "Agregar horario"
   const handleHorarioChange = (e) => {
     const seleccionado = e.target.value;
 
@@ -160,15 +155,15 @@ export default function Chart({ datos }) {
     if (seleccionado === "Agregar horario") {
       // Llamar a tu función para agregar horario
       desplegarModalHorario();
-            // Obtener las opciones específicas del select
-            const opciones = e.target.getAttribute('data-opciones').split(',')
-            console.log(opciones)
+      // Obtener las opciones específicas del select
+      const opciones = e.target.getAttribute("data-opciones").split(",");
+      console.log(opciones);
 
-            // Obtener el índice del penúltimo elemento
-            const penultimoIndice = opciones.length - 2;
-      
-            // Establecer el valor del select como el penúltimo elemento
-            e.target.selectedIndex = penultimoIndice;
+      // Obtener el índice del penúltimo elemento
+      const penultimoIndice = opciones.length - 2;
+
+      // Establecer el valor del select como el penúltimo elemento
+      e.target.selectedIndex = penultimoIndice;
     }
   };
 
@@ -176,6 +171,7 @@ export default function Chart({ datos }) {
     setModalHorario(false);
   };
 
+  // Busca el id del curso y almacena los datos de la asignatura en asignaturaSelected
   const handleClickAsignatura = (id_curso) => {
     async function getCursoName(id_curso) {
       try {
@@ -206,30 +202,33 @@ export default function Chart({ datos }) {
     "Lunes 8:00-12:00",
     "Viernes 8:00-12:00",
     "Miércoles 2:00-6:00",
-    /*... más opciones ...*/ "Agregar horario",
+     "Agregar horario",
   ];
 
   const generateAulasOptions = () => {
+    var aulasOptionsAP = [
+      ...Array(3)
+        .fill()
+        .map((_, i) =>
+          Array.from({ length: 9 }, (_, j) => `${i + 1}0${j + 1}`)
+        ),
+    ].flat();
 
-  var aulasOptionsAP = [
-    ...Array(3)
-      .fill()
-      .map((_, i) => Array.from({ length: 9 }, (_, j) => `${i + 1}0${j + 1}`)),
-  ].flat();
+    var aulasOptionsNP = [
+      ...Array(3)
+        .fill()
+        .map((_, i) =>
+          Array.from({ length: 9 }, (_, j) => `${i + 1}0${j + 1}`)
+        ),
+    ].flat();
 
-  var aulasOptionsNP = [
-    ...Array(3)
-      .fill()
-      .map((_, i) => Array.from({ length: 9 }, (_, j) => `${i + 1}0${j + 1}`)),
-  ].flat();
+    // Duplicar la lista de aulas y concatenar "AP" y "NP"
+    var aulasOptionsAP = aulasOptionsAP.flatMap((aula) => [`${aula} AP`]);
+    var aulasOptionsNP = aulasOptionsNP.flatMap((aula) => [`${aula} NP`]);
+    const aulasOptions = aulasOptionsAP.concat(aulasOptionsNP);
 
-  // Duplicar la lista de aulas y concatenar "AP" y "NP"
-  var aulasOptionsAP = aulasOptionsAP.flatMap((aula) => [`${aula} AP`]);
-  var aulasOptionsNP = aulasOptionsNP.flatMap((aula) => [`${aula} NP`]);
-  const aulasOptions = aulasOptionsAP.concat(aulasOptionsNP);
-
-  return aulasOptions;
-  }
+    return aulasOptions;
+  };
 
   const aulasOptions = generateAulasOptions();
 
@@ -243,6 +242,15 @@ export default function Chart({ datos }) {
               <h4 className="close" onClick={handleCloseModal}>
                 x
               </h4>
+            </div>
+            <div className="modalHorario-body">
+              <div className="body-top-information">
+                {
+                  "Sección " +
+                    asignaturaSelected.id_grupo /* cambiar a section selected */
+                }
+              </div>
+              <div className="schedule-creation-device"></div>
             </div>
           </div>
         </div>
@@ -296,7 +304,11 @@ export default function Chart({ datos }) {
                         <select
                           onChange={handleHorarioChange}
                           onClick={() => handleClickAsignatura(curso.id_curso)}
-                          data-opciones={horariosOptions.join(',') /* Cambiar cuando se termine de configurar el modal crear horario*/}
+                          data-opciones={
+                            horariosOptions.join(
+                              ","
+                            ) /* Cambiar cuando se termine de configurar el modal crear horario*/
+                          }
                         >
                           {horariosOptions.map((option, i) => (
                             <option key={i} value={option}>

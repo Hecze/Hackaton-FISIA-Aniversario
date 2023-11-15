@@ -14,9 +14,7 @@ export default function Chart({ datos }) {
 
   const [idSelected, setIdSelected] = useState("");
   const [modalHorario, setModalHorario] = useState(false);
-  const [asignaturaSelected, setAsignaturaSelected] = useState("");
-  const { v4: uuidv4 } = require("uuid");
-  const [asignaturaNameSelected, SetAsignaturaNameSelected ] = ("");
+  const [asignaturaSelected, setAsignaturaSelected] = useState();
   const [escuelaSelected, setEscuelaSelected] = useState(
     "Ingeniería de Software"
   );
@@ -35,14 +33,7 @@ export default function Chart({ datos }) {
 
   useEffect(() => {
     setVisualCursos(mallaCursos);
-  }, [mallaCursos]); 
-
-  useEffect(() => {
-    //convertir asignaturaSelected a entero antes de pasarlo
-    getCursoName(asignaturaSelected)
-
-  }, [asignaturaSelected]);
-
+  }, [mallaCursos]);
 
   async function loadAllCursos() {
     const result = await axios.get("http://localhost:3000/api/cursos");
@@ -121,7 +112,7 @@ export default function Chart({ datos }) {
   const handleMallaChange = (e) => {
     const seleccionado = e.target.value;
 
-    if (seleccionado == "todas") {
+    if (seleccionado == "Todas") {
       setVisualCursos(allCursos);
     } else {
       setPlanesAñoSelected(seleccionado); // se procederá a dedecudir
@@ -130,14 +121,14 @@ export default function Chart({ datos }) {
     }
   };
 
-  const mallasOptions = [2011, 2015, 2018, 2023, "todas"];
+  const mallasOptions = [2011, 2015, 2018, 2023, "Todas"];
 
   async function agregarSeccion(id_curso) {
     try {
       const result = await axios.post("http://localhost:3000/api/secciones", {
-        id_curso: id_curso
+        id_curso: id_curso,
       });
-      setActualizar(true)
+      setActualizar(true);
       console.log(result.data);
     } catch (error) {
       console.error(error);
@@ -146,7 +137,9 @@ export default function Chart({ datos }) {
 
   async function eliminarSeccion(id_grupo) {
     try {
-      const result = await axios.delete(`http://localhost:3000/api/secciones/${id_grupo}`);
+      const result = await axios.delete(
+        `http://localhost:3000/api/secciones/${id_grupo}`
+      );
       setActualizar(true);
       console.log(result.data);
     } catch (error) {
@@ -154,14 +147,12 @@ export default function Chart({ datos }) {
     }
   }
 
-
   //CODIGO ANTIGUOOO
-
-  // Generar un nuevo ID aleatorio
 
   // Función para manejar el cambio en el select de horarios
   const handleHorarioChange = (e) => {
     const seleccionado = e.target.value;
+
     const desplegarModalHorario = () => {
       setModalHorario(true);
     };
@@ -169,6 +160,15 @@ export default function Chart({ datos }) {
     if (seleccionado === "Agregar horario") {
       // Llamar a tu función para agregar horario
       desplegarModalHorario();
+            // Obtener las opciones específicas del select
+            const opciones = e.target.getAttribute('data-opciones').split(',')
+            console.log(opciones)
+
+            // Obtener el índice del penúltimo elemento
+            const penultimoIndice = opciones.length - 2;
+      
+            // Establecer el valor del select como el penúltimo elemento
+            e.target.selectedIndex = penultimoIndice;
     }
   };
 
@@ -176,24 +176,20 @@ export default function Chart({ datos }) {
     setModalHorario(false);
   };
 
-  const handleClickAsignatura = (asignatura) => {
-    /* guardar en asignatureSelected el nombre del id del div al que se le hizo click*/
-    console.log(asignatura)
-    setAsignaturaSelected(asignatura);
-  };
-
-  async function getCursoName(id_curso) {
-    try {
-      const result = await axios.get(`http://localhost:3000/api/cursos/${id_curso}`);
-      console.log(result.data)
-      return result.data.nombre_curso;
-    } catch (error) {
-      console.error(error);
+  const handleClickAsignatura = (id_curso) => {
+    async function getCursoName(id_curso) {
+      try {
+        const result = await axios.get(
+          `http://localhost:3000/api/cursos/${id_curso}`
+        );
+        setAsignaturaSelected(result.data);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
 
-
-  
+    getCursoName(id_curso);
+  };
 
   // Función para agregar un nuevo horario
   const agregarNuevoHorario = () => {
@@ -213,6 +209,8 @@ export default function Chart({ datos }) {
     /*... más opciones ...*/ "Agregar horario",
   ];
 
+  const generateAulasOptions = () => {
+
   var aulasOptionsAP = [
     ...Array(3)
       .fill()
@@ -230,13 +228,18 @@ export default function Chart({ datos }) {
   var aulasOptionsNP = aulasOptionsNP.flatMap((aula) => [`${aula} NP`]);
   const aulasOptions = aulasOptionsAP.concat(aulasOptionsNP);
 
+  return aulasOptions;
+  }
+
+  const aulasOptions = generateAulasOptions();
+
   return (
     <div className="chart">
       {modalHorario && (
         <div className="modalHorario-container">
           <div className="modalHorario">
             <div className="modalHorario-header">
-              <p>Calculo I</p>
+              <p>{asignaturaSelected.nombre_curso}</p>
               <h4 className="close" onClick={handleCloseModal}>
                 x
               </h4>
@@ -246,26 +249,24 @@ export default function Chart({ datos }) {
       )}
 
       <div className="selects-container">
-      <select onChange={handleEscuelaChange} className="malla&year">
-        <option value="">Seleccionar escuela</option>
-        {escuelasOptions.map((escuela, index) => (
-          <option key={index} value={escuela}>
-            {escuela}
-          </option>
-        ))}
-      </select>
+        <select onChange={handleEscuelaChange} className="malla&year">
+          <option value="">Seleccionar escuela</option>
+          {escuelasOptions.map((escuela, index) => (
+            <option key={index} value={escuela}>
+              {escuela}
+            </option>
+          ))}
+        </select>
 
-      <select onChange={handleMallaChange} className="malla&year">
-        <option value="">Seleccionar malla</option>
-        {mallasOptions.map((malla, index) => (
-          <option key={index} value={malla}>
-            {malla}
-          </option>
-        ))}
-      </select>
+        <select onChange={handleMallaChange} className="malla&year">
+          <option value="">Seleccionar malla</option>
+          {mallasOptions.map((malla, index) => (
+            <option key={index} value={malla}>
+              {malla}
+            </option>
+          ))}
+        </select>
       </div>
-
-
 
       <table>
         <thead>
@@ -295,6 +296,7 @@ export default function Chart({ datos }) {
                         <select
                           onChange={handleHorarioChange}
                           onClick={() => handleClickAsignatura(curso.id_curso)}
+                          data-opciones={horariosOptions.join(',') /* Cambiar cuando se termine de configurar el modal crear horario*/}
                         >
                           {horariosOptions.map((option, i) => (
                             <option key={i} value={option}>

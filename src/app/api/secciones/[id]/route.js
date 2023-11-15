@@ -18,3 +18,10 @@ export async function GET(request, { params }) {
 }
 
 
+export async function DELETE(request, { params }) {
+  try {
+    const result = await conn.query("DELETE FROM grupo WHERE id_grupo = ?", [params.id]);
+    return NextResponse.json({message: "Seccion eliminada"});
+  } catch (error) {}
+}
+

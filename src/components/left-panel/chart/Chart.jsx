@@ -137,6 +137,16 @@ export default function Chart({ datos }) {
     }
   }
 
+  async function eliminarSeccion(id_grupo) {
+    try {
+      const result = await axios.delete(`http://localhost:3000/api/secciones/${id_grupo}`);
+      setActualizar(true);
+      console.log(result.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   //CODIGO ANTIGUOOO
 
@@ -270,7 +280,7 @@ export default function Chart({ datos }) {
                       </td>
                       <td className="desplegable">
                         <select
-                          onClick={() => handleClickAsignatura(asignatura)}
+                          onClick={() => handleClickAsignatura(seccion.id_grupo)}
                         >
                           {aulasOptions.map((option, i) => (
                             <option key={i} value={option}>
@@ -281,7 +291,7 @@ export default function Chart({ datos }) {
                       </td>
                       <td
                         className="delete"
-                        onClick={() => eliminarSeccion(seccion)}
+                        onClick={() => eliminarSeccion(seccion.id_grupo)}
                       >
                         <h3>x</h3>
                       </td>

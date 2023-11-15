@@ -16,7 +16,7 @@ export default function Chart({ datos }) {
   const [modalHorario, setModalHorario] = useState(false);
   const [asignaturaSelected, setAsignaturaSelected] = useState("");
   const { v4: uuidv4 } = require("uuid");
-
+  const [asignaturaNameSelected, SetAsignaturaNameSelected ] = ("");
   const [escuelaSelected, setEscuelaSelected] = useState(
     "Ingeniería de Software"
   );
@@ -35,7 +35,14 @@ export default function Chart({ datos }) {
 
   useEffect(() => {
     setVisualCursos(mallaCursos);
-  }, [mallaCursos]);
+  }, [mallaCursos]); 
+
+  useEffect(() => {
+    //convertir asignaturaSelected a entero antes de pasarlo
+    getCursoName(asignaturaSelected)
+
+  }, [asignaturaSelected]);
+
 
   async function loadAllCursos() {
     const result = await axios.get("http://localhost:3000/api/cursos");
@@ -171,8 +178,22 @@ export default function Chart({ datos }) {
 
   const handleClickAsignatura = (asignatura) => {
     /* guardar en asignatureSelected el nombre del id del div al que se le hizo click*/
+    console.log(asignatura)
     setAsignaturaSelected(asignatura);
   };
+
+  async function getCursoName(id_curso) {
+    try {
+      const result = await axios.get(`http://localhost:3000/api/cursos/${id_curso}`);
+      console.log(result.data)
+      return result.data.nombre_curso;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+  
 
   // Función para agregar un nuevo horario
   const agregarNuevoHorario = () => {
@@ -215,7 +236,7 @@ export default function Chart({ datos }) {
         <div className="modalHorario-container">
           <div className="modalHorario">
             <div className="modalHorario-header">
-              <hp>{asignaturaSelected}</hp>
+              <p>Calculo I</p>
               <h4 className="close" onClick={handleCloseModal}>
                 x
               </h4>
@@ -269,7 +290,7 @@ export default function Chart({ datos }) {
                       <td className="desplegable">
                         <select
                           onChange={handleHorarioChange}
-                          onClick={() => handleClickAsignatura(seccion.id_grupo)}
+                          onClick={() => handleClickAsignatura(curso.id_curso)}
                         >
                           {horariosOptions.map((option, i) => (
                             <option key={i} value={option}>
@@ -280,7 +301,7 @@ export default function Chart({ datos }) {
                       </td>
                       <td className="desplegable">
                         <select
-                          onClick={() => handleClickAsignatura(seccion.id_grupo)}
+                          onClick={() => handleClickAsignatura(curso.id_curso)}
                         >
                           {aulasOptions.map((option, i) => (
                             <option key={i} value={option}>

@@ -23,27 +23,19 @@ export default function Chart({ datos }) {
   const [planesAñoSelected, setPlanesAñoSelected] = useState(2018); //se llama en la funcion deducir malla, almacena el estado del año seleccionado
   const [id_mallaSelected, setID_MallaSelected] = useState(1);
 
-
   const [actualizar, setActualizar] = useState(false);
 
   //CODIGO NUEVO
 
-
-
   useEffect(() => {
     loadAllCursos();
-    setActualizar(false);
     loadAllSecciones();
-  }, []);
-  
-
-  
+    setActualizar(false);
+  }, [actualizar]);
 
   useEffect(() => {
     setVisualCursos(mallaCursos);
   }, [mallaCursos]);
-  
-
 
   async function loadAllCursos() {
     const result = await axios.get("http://localhost:3000/api/cursos");
@@ -87,32 +79,26 @@ export default function Chart({ datos }) {
     const filteredAsignaturas = allCursos.filter(
       (asignatura) => asignatura.id_plan_estudios === id_mallaSelected
     );
-    
+
     setMallaCursos(filteredAsignaturas);
   }
 
-
-
   async function loadAllSecciones() {
-    const result = await axios.get(
-      "http://localhost:3000/api/secciones"
-    );
+    const result = await axios.get("http://localhost:3000/api/secciones");
     const allSecciones = result.data.result;
     setSecciones(allSecciones);
-
   }
 
   const loadSeccionesCurso = (id_curso) => {
-    console.log("ejecutando funciones loadSeccionesCurso")
     if (secciones) {
-      const filteredSecciones = secciones.filter((seccion) => seccion.id_curso === id_curso);
-      return filteredSecciones
-    }
-    else{
-      console.log(secciones, " null")
+      const filteredSecciones = secciones.filter(
+        (seccion) => seccion.id_curso === id_curso
+      );
+      return filteredSecciones;
+    } else {
+      console.log(secciones, " null");
     }
   };
-
 
   const handleEscuelaChange = (e) => {
     const seleccionado = e.target.value;
@@ -139,6 +125,19 @@ export default function Chart({ datos }) {
 
   const mallasOptions = [2011, 2015, 2018, 2023, "todas"];
 
+  async function agregarSeccion(id_curso) {
+    try {
+      const result = await axios.post("http://localhost:3000/api/secciones", {
+        id_curso: id_curso
+      });
+      setActualizar(true)
+      console.log(result.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   //CODIGO ANTIGUOOO
 
   // Generar un nuevo ID aleatorio
@@ -162,8 +161,7 @@ export default function Chart({ datos }) {
 
   const handleClickAsignatura = (asignatura) => {
     /* guardar en asignatureSelected el nombre del id del div al que se le hizo click*/
-    console.log(asignatura.nombre_curso);
-    setAsignaturaSelected(asignatura.nombre_curso);
+    setAsignaturaSelected(asignatura);
   };
 
   // Función para agregar un nuevo horario
@@ -259,20 +257,16 @@ export default function Chart({ datos }) {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td className="desplegable">
-                        {seccion.horario ? (
-                          <select
-                            onChange={handleHorarioChange}
-                            onClick={() => handleClickAsignatura(asignatura)}
-                          >
-                            {horariosOptions.map((option, i) => (
-                              <option key={i} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          <div className="add-horario" />
-                        )}
+                        <select
+                          onChange={handleHorarioChange}
+                          onClick={() => handleClickAsignatura(seccion.id_grupo)}
+                        >
+                          {horariosOptions.map((option, i) => (
+                            <option key={i} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
                       </td>
                       <td className="desplegable">
                         <select
@@ -298,7 +292,7 @@ export default function Chart({ datos }) {
               <tr>
                 <td
                   className="add-seccion"
-                  onClick={() => agregarSeccion(asignatura)}
+                  onClick={() => agregarSeccion(curso.id_curso)}
                 >
                   <h2>+</h2>
                 </td>

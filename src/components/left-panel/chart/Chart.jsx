@@ -10,6 +10,8 @@ export default function Chart({ datos }) {
   const [mallaCursos, setMallaCursos] = useState([]); // Cursos de la malla seleccionada // no aplica si se selecciona la opcion: mostrar todos
   const [visualCursos, setVisualCursos] = useState([]); // Cursos que se muestran
 
+  const [secciones, setSecciones] = useState(); // Secciones de la malla
+
   const [idSelected, setIdSelected] = useState("");
   const [modalHorario, setModalHorario] = useState(false);
   const [asignaturaSelected, setAsignaturaSelected] = useState("");
@@ -18,73 +20,126 @@ export default function Chart({ datos }) {
   const [escuelaSelected, setEscuelaSelected] = useState(
     "Ingeniería de Software"
   );
-  const [planesAñoSelected, setPlanesAñoSelected] = useState([]);
+  const [planesAñoSelected, setPlanesAñoSelected] = useState(2018); //se llama en la funcion deducir malla, almacena el estado del año seleccionado
   const [id_mallaSelected, setID_MallaSelected] = useState(1);
-  const [cursos, setCursos] = useState([]);
+
+
+  const [actualizar, setActualizar] = useState(false);
 
   //CODIGO NUEVO
 
-  const deducir_idMalla = () => {
-    if (escuelaSelected == "Ingeniería de Software") {
-      if (planesAñoSelected == "2011") {
-        setID_MallaSelected(1);
-      } else if (planesAñoSelected == "2015") {
-        setID_MallaSelected(2);
-      } else if (planesAñoSelected == "2018") {
-        setID_MallaSelected(3);
-      } else if (planesAñoSelected == "2023") {
-        setID_MallaSelected(4);
+
+
+  useEffect(() => {
+    loadAllCursos();
+    setActualizar(false);
+    loadAllSecciones();
+  }, []);
+  
+
+  
+
+  useEffect(() => {
+    setVisualCursos(mallaCursos);
+  }, [mallaCursos]);
+  
+
+
+  async function loadAllCursos() {
+    const result = await axios.get("http://localhost:3000/api/cursos");
+    setAllCursos(result.data.result);
+  }
+
+  //loadCursos sin api
+
+  async function loadCursosMalla() {
+    const deducir_idMalla = () => {
+      if (escuelaSelected == "Ingeniería de Software") {
+        if (planesAñoSelected == "2011") {
+          setID_MallaSelected(1);
+        } else if (planesAñoSelected == "2015") {
+          setID_MallaSelected(2);
+        } else if (planesAñoSelected == "2018") {
+          setID_MallaSelected(3);
+        } else if (planesAñoSelected == "2023") {
+          setID_MallaSelected(4);
+        }
+      } else if (escuelaSelected == "Ingeniería de Sistemas") {
+        if (planesAñoSelected == "2011") {
+          setID_MallaSelected(5);
+        } else if (planesAñoSelected == "2015") {
+          setID_MallaSelected(6);
+        } else if (planesAñoSelected == "2018") {
+          setID_MallaSelected(7);
+        } else if (planesAñoSelected == "2023") {
+          setID_MallaSelected(8);
+        }
       }
-    } else if (escuelaSelected == "Ingeniería de Sistemas") {
-      if (planesAñoSelected == "2011") {
-        setID_MallaSelected(5);
-      } else if (planesAñoSelected == "2015") {
-        setID_MallaSelected(6);
-      } else if (planesAñoSelected == "2018") {
-        setID_MallaSelected(7);
-      } else if (planesAñoSelected == "2023") {
-        setID_MallaSelected(8);
+
+      async function loadMalla() {
+        const result = await axios.get("http://localhost:3000/api/planes");
+        return result.data.result;
       }
-    }
+    };
 
-    async function loadMalla() {
-      const result = await axios.get("http://localhost:3000/api/planes");
-      return result.data.result;
-    }
-  };
+    deducir_idMalla();
 
-  async function loadCursos() {
-    async function loadAsignaturas() {
-      const result = await axios.get("http://localhost:3000/api/cursos");
-      return result.data.result;
-    }
-
-    const asignaturas = await loadAsignaturas();
-
-    const filteredAsignaturas = asignaturas.filter(
+    const filteredAsignaturas = allCursos.filter(
       (asignatura) => asignatura.id_plan_estudios === id_mallaSelected
     );
-
-    setAllCursos(asignaturas);
+    
     setMallaCursos(filteredAsignaturas);
   }
 
-  async function loadSecciones(id_curso) {
-    var result = await axios.get(
-      "http://localhost:3000/api/secciones/" + id_curso
+
+
+  async function loadAllSecciones() {
+    const result = await axios.get(
+      "http://localhost:3000/api/secciones"
     );
-    return result.data;
+    const allSecciones = result.data.result;
+    setSecciones(allSecciones);
+
   }
 
+  const loadSeccionesCurso = (id_curso) => {
+    console.log("ejecutando funciones loadSeccionesCurso")
+    if (secciones) {
+      const filteredSecciones = secciones.filter((seccion) => seccion.id_curso === id_curso);
+      return filteredSecciones
+    }
+    else{
+      console.log(secciones, " null")
+    }
+  };
+
+
+  const handleEscuelaChange = (e) => {
+    const seleccionado = e.target.value;
+    setEscuelaSelected(seleccionado);
+  };
+
+  const escuelasOptions = [
+    "Ingeniería de Software",
+    "Ingeniería de Sistemas",
+    "Ciencias de la Computación",
+  ];
+
+  const handleMallaChange = (e) => {
+    const seleccionado = e.target.value;
+
+    if (seleccionado == "todas") {
+      setVisualCursos(allCursos);
+    } else {
+      setPlanesAñoSelected(seleccionado); // se procederá a dedecudir
+      loadCursosMalla();
+      setVisualCursos(mallaCursos);
+    }
+  };
+
+  const mallasOptions = [2011, 2015, 2018, 2023, "todas"];
 
   //CODIGO ANTIGUOOO
-  const randomId = () => {
-    return uuidv4();
-  };
-
-  const searchId = (seccion) => {
-    setIdSelected(seccion.id);
-  };
 
   // Generar un nuevo ID aleatorio
 
@@ -107,8 +162,8 @@ export default function Chart({ datos }) {
 
   const handleClickAsignatura = (asignatura) => {
     /* guardar en asignatureSelected el nombre del id del div al que se le hizo click*/
-    console.log(asignatura.name);
-    setAsignaturaSelected(asignatura.name);
+    console.log(asignatura.nombre_curso);
+    setAsignaturaSelected(asignatura.nombre_curso);
   };
 
   // Función para agregar un nuevo horario
@@ -128,47 +183,6 @@ export default function Chart({ datos }) {
     "Miércoles 2:00-6:00",
     /*... más opciones ...*/ "Agregar horario",
   ];
-
-  const agregarSeccion = (asignatura_input, horario = "xd") => {
-    const nuevaSeccion = {
-      id: randomId(),
-      horario: horario,
-      aula: "",
-    };
-
-    // Buscar asignatura.name de Asignaturas y agregarle la nueva sección
-
-    const asignaturasActualizadas = asignaturas.map((asignatura) => {
-      if (asignatura.name === asignatura_input.name) {
-        return {
-          ...asignatura,
-          secciones: {
-            ...asignatura.secciones,
-            [Object.keys(asignatura.secciones).length + 1]: nuevaSeccion,
-          },
-        };
-      } else {
-        return asignatura; // Devolver la asignatura sin modificar
-      }
-    });
-
-    console.log(asignaturasActualizadas);
-    setAsignaturas(asignaturasActualizadas);
-  };
-
-  const eliminarSeccion = (seccion) => {
-    searchId(seccion);
-    //buscar en todas las asignaturas todas sus secciones y eliminar la que tenga la id seleccionada
-    const asignaturasActualizadas = asignaturas.map((asignatura) => {
-      return {
-        ...asignatura,
-        secciones: Object.values(asignatura.secciones).filter(
-          (seccion) => seccion.id !== idSelected
-        ),
-      };
-    });
-    setAsignaturas(asignaturasActualizadas);
-  };
 
   var aulasOptionsAP = [
     ...Array(3)
@@ -201,6 +215,25 @@ export default function Chart({ datos }) {
           </div>
         </div>
       )}
+
+      <select onChange={handleEscuelaChange}>
+        <option value="">Seleccionar escuela</option>
+        {escuelasOptions.map((escuela, index) => (
+          <option key={index} value={escuela}>
+            {escuela}
+          </option>
+        ))}
+      </select>
+
+      <select onChange={handleMallaChange}>
+        <option value="">Seleccionar malla</option>
+        {mallasOptions.map((malla, index) => (
+          <option key={index} value={malla}>
+            {malla}
+          </option>
+        ))}
+      </select>
+
       <table>
         <thead>
           <tr>
@@ -212,15 +245,15 @@ export default function Chart({ datos }) {
           </tr>
         </thead>
         <tbody>
-          {asignaturas.map((asignatura, index) => (
+          {visualCursos.map((curso, index) => (
             <React.Fragment key={index}>
               <tr className="asignatura">
-                <td rowSpan={Object.values(asignatura.secciones).length + 2}>
-                  <p>{asignatura.name}</p>
+                <td rowSpan={loadSeccionesCurso(curso.id_curso).length + 2}>
+                  <p>{curso.nombre_curso}</p>
                 </td>
               </tr>
 
-              {Object.values(asignatura.secciones).map(
+              {Object.values(loadSeccionesCurso(curso.id_curso)).map(
                 (seccion, index) =>
                   seccion && (
                     <tr key={index}>

@@ -245,7 +245,8 @@ export default function Chart({ datos }) {
         </div>
       )}
 
-      <select onChange={handleEscuelaChange}>
+      <div className="selects-container">
+      <select onChange={handleEscuelaChange} className="malla&year">
         <option value="">Seleccionar escuela</option>
         {escuelasOptions.map((escuela, index) => (
           <option key={index} value={escuela}>
@@ -254,7 +255,7 @@ export default function Chart({ datos }) {
         ))}
       </select>
 
-      <select onChange={handleMallaChange}>
+      <select onChange={handleMallaChange} className="malla&year">
         <option value="">Seleccionar malla</option>
         {mallasOptions.map((malla, index) => (
           <option key={index} value={malla}>
@@ -262,6 +263,9 @@ export default function Chart({ datos }) {
           </option>
         ))}
       </select>
+      </div>
+
+
 
       <table>
         <thead>

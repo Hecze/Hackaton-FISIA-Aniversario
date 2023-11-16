@@ -36,6 +36,7 @@ tr.asignatura td {
   text-align: center;
   width: 40%;
   border-bottom: 2.8px solid #777777ab;
+  height: 7rem;
 }
 
 tr.asignatura p{
@@ -51,11 +52,6 @@ th {
   background-color: #f2f2f2;
 }
 
-td.delete {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 td img {
   width: 2rem;
@@ -80,11 +76,7 @@ td img {
   color: var(--var-color-red);
 }
 
-.add-seccion{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+td.add-seccion{
   padding: .5rem 0;
   background-color: var(--var--background-green);
   color: var(--var-color-green);

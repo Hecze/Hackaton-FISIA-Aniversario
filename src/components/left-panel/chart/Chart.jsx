@@ -16,6 +16,7 @@ export default function Chart({ datos }) {
   const [visualCursos, setVisualCursos] = useState([]); // Cursos que se muestran
 
   const [secciones, setSecciones] = useState(); // Secciones de visual cursos
+  const [seccionInt, setSeccionInt] = useState();
 
   //CONFIGURACION DE HORARIOS
 
@@ -36,8 +37,7 @@ export default function Chart({ datos }) {
   useEffect(() => {
     loadCursosMalla();
     setVisualCursos(mallaCursos);
-    loadSecciones();
-  }, [escuelaSelected, id_mallaSelected]); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
+  }, [escuelaSelected]); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
 
   async function loadAllCursos() {
     const result = await axios.get("http://localhost:3000/api/cursos");
@@ -146,6 +146,8 @@ export default function Chart({ datos }) {
     } catch (error) {
       console.error(error);
     }
+
+    /* Calcular el nuevo gruiNumero de los demas y actualizarlo*/
   }
 
   //CODIGO ANTIGUOOO
@@ -222,30 +224,49 @@ export default function Chart({ datos }) {
 
   const aulasOptions = generateAulasOptions();
 
+  const handleClickSeccion = (curso, actual_index, index_oficial) => {
+    setSeccionInt(actual_index);
+    setAsignaturaSelected(curso);
+    console.log("Seccion: ", actual_index, " de ", curso.nombre_curso);
+  };
+
+  const actualizarIndexSeccion = (actual_index, grupo) => {
+    const index_oficial = grupo.gru_iNumero;
+    const id_grupo = grupo.id_grupo;
+
+    if (index_oficial) {
+      if (actual_index == index_oficial) {
+        console.log("los index son iguales");
+        return "No deberias poder estar viendo esto"
+      } else {
+        console.log("los index son distintos", actual_index, index_oficial);
+        return (" Es " + index_oficial + " Pero Debiese ser " + actual_index + "")
+        // Actualizar el index de la seccion mandando un PUT a la database
+      }
+    }
+  };
+
   return (
     <div className="chart">
       {modalHorario && (
         <div className="modalHorario-container">
           <div className="modalHorario">
             <div className="modalHorario-header">
-              <p>{asignaturaSelected.nombre_curso}</p>
+              <p>{asignaturaSelected && asignaturaSelected.nombre_curso}</p>
               <h4 className="close" onClick={handleCloseModal}>
                 x
               </h4>
             </div>
             <div className="modalHorario-body">
               <div className="body-top-information">
-                {
-                  "Sección " +
-                    asignaturaSelected.id_grupo /* cambiar a section selected */
-                }
+                {"Sección " + seccionInt}
               </div>
               <div className="schedule-creation-device"></div>
             </div>
           </div>
         </div>
       )}
-
+      ,
       <div className="selects-container">
         <select onChange={handleEscuelaChange} className="malla&year">
           <option value="">Seleccionar escuela</option>
@@ -265,7 +286,6 @@ export default function Chart({ datos }) {
           ))}
         </select>
       </div>
-
       <table>
         <thead>
           <tr>
@@ -289,11 +309,27 @@ export default function Chart({ datos }) {
                 (seccion, index) =>
                   seccion && (
                     <tr key={index}>
-                      <td>{seccion.gru_iNumero}</td>
+                      <td>
+                        {/* Si seccion.gru_iNumero es igual a index, mostrar el segundo */}
+                        {seccion.gru_iNumero === index + 1 ? (
+                              seccion.gru_iNumero
+                        ) : (
+                          // Si no son iguales, ejecutar la función actualizarIndexSecciones
+                          actualizarIndexSeccion(index + 1, seccion)
+                      
+                        )}
+                        
+                      </td>
                       <td className="desplegable">
                         <select
+                          onClick={() =>
+                            handleClickSeccion(
+                              curso,
+                              index + 1,
+                              seccion.gru_iNumero
+                            )
+                          }
                           onChange={handleHorarioChange}
-                          onClick={() => setAsignaturaSelected(curso)}
                           data-opciones={
                             horariosOptions.join(
                               ","
@@ -309,9 +345,7 @@ export default function Chart({ datos }) {
                         </select>
                       </td>
                       <td className="desplegable">
-                        <select
-                          onClick={() => handleClickAsignatura(curso.id_curso)}
-                        >
+                        <select>
                           {aulasOptions.map((option, i) => (
                             <option key={i} value={option}>
                               {option}

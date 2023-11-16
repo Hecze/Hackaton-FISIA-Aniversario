@@ -15,10 +15,11 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { id_curso } = await request.json();
+    const { id_curso, gru_iNumero } = await request.json();
 
     const result = await conn.query("INSERT INTO grupo SET ?", {
       id_curso,
+      gru_iNumero,
     });
 
     return NextResponse.json({ message: "POST grupos", result });

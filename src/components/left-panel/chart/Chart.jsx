@@ -29,13 +29,15 @@ export default function Chart({ datos }) {
 
   useEffect(() => {
     loadAllCursos();
-    loadAllSecciones();
+    loadSecciones();
     setActualizar(false);
   }, [actualizar]); //actualizar tabla cuando se agrega o elimina una seccion
 
   useEffect(() => {
+    loadCursosMalla();
     setVisualCursos(mallaCursos);
-  }, [mallaCursos]); //actualizar tabla cuando se cambia de malla en el select
+    loadSecciones();
+  }, [escuelaSelected, id_mallaSelected]); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
 
   async function loadAllCursos() {
     const result = await axios.get("http://localhost:3000/api/cursos");
@@ -64,6 +66,8 @@ export default function Chart({ datos }) {
         } else if (planesAñoSelected == "2023") {
           setID_MallaSelected(8);
         }
+      } else if (escuelaSelected == "Ciencias de la Computación") {
+        setID_MallaSelected(null);
       }
     };
 
@@ -76,8 +80,8 @@ export default function Chart({ datos }) {
     setMallaCursos(filteredAsignaturas);
   }
 
-  async function loadAllSecciones() {
-    const result = await axios.get("http://localhost:3000/api/secciones");
+  async function loadSecciones() {
+    const result = await axios.get("http://localhost:3000/api/grupos");
     const allSecciones = result.data.result;
     setSecciones(allSecciones);
   }
@@ -119,12 +123,14 @@ export default function Chart({ datos }) {
   const mallasOptions = [2011, 2015, 2018, 2023, "Todas"];
 
   async function agregarSeccion(id_curso) {
+    const n_seccion = loadSeccionesCurso(id_curso).length + 1;
     try {
-      const result = await axios.post("http://localhost:3000/api/secciones", {
+      const result = await axios.post("http://localhost:3000/api/grupos", {
         id_curso: id_curso,
+        gru_iNumero: n_seccion,
       });
       setActualizar(true);
-      console.log(result.data);
+      console.log("Se agregó con exito");
     } catch (error) {
       console.error(error);
     }
@@ -133,7 +139,7 @@ export default function Chart({ datos }) {
   async function eliminarSeccion(id_grupo) {
     try {
       const result = await axios.delete(
-        `http://localhost:3000/api/secciones/${id_grupo}`
+        `http://localhost:3000/api/grupos/${id_grupo}`
       );
       setActualizar(true);
       console.log(result.data);
@@ -157,7 +163,7 @@ export default function Chart({ datos }) {
       desplegarModalHorario();
       // Obtener las opciones específicas del select
       const opciones = e.target.getAttribute("data-opciones").split(",");
-      console.log(opciones);
+      const seccion_index = e.target.getAttribute("index");
 
       // Obtener el índice del penúltimo elemento
       const penultimoIndice = opciones.length - 2;
@@ -169,22 +175,6 @@ export default function Chart({ datos }) {
 
   const handleCloseModal = () => {
     setModalHorario(false);
-  };
-
-  // Busca el id del curso y almacena los datos de la asignatura en asignaturaSelected
-  const handleClickAsignatura = (id_curso) => {
-    async function getCursoName(id_curso) {
-      try {
-        const result = await axios.get(
-          `http://localhost:3000/api/cursos/${id_curso}`
-        );
-        setAsignaturaSelected(result.data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    getCursoName(id_curso);
   };
 
   // Función para agregar un nuevo horario
@@ -202,7 +192,7 @@ export default function Chart({ datos }) {
     "Lunes 8:00-12:00",
     "Viernes 8:00-12:00",
     "Miércoles 2:00-6:00",
-     "Agregar horario",
+    "Agregar horario",
   ];
 
   const generateAulasOptions = () => {
@@ -299,16 +289,17 @@ export default function Chart({ datos }) {
                 (seccion, index) =>
                   seccion && (
                     <tr key={index}>
-                      <td>{index + 1}</td>
+                      <td>{seccion.gru_iNumero}</td>
                       <td className="desplegable">
                         <select
                           onChange={handleHorarioChange}
-                          onClick={() => handleClickAsignatura(curso.id_curso)}
+                          onClick={() => setAsignaturaSelected(curso)}
                           data-opciones={
                             horariosOptions.join(
                               ","
                             ) /* Cambiar cuando se termine de configurar el modal crear horario*/
                           }
+                          index={index}
                         >
                           {horariosOptions.map((option, i) => (
                             <option key={i} value={option}>

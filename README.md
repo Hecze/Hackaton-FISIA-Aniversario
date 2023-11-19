@@ -1,36 +1,21 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Facultad de Ingeniería de Sistemas
+Hackaton20231112
+Material para la Hackaton 12-11-2023
 
-## Getting Started
+Problemática
+La Facultad carece de un aplicación que automatice la gestión de los grupos o secciones que se aperturan en cada semestre académico. El trabajo lo realizan utilizando archivos en Excel de una manera rudimentaria. Esto genera una sobrecarga de trabajo en el personal que esta a cargo de dicha tarea ya que los controles los tiene que realizar de manera manual (Ejemplo: verificar que no existan cruces de horario, verificar que el aula asignada a una seccion o secciones tenga la capacidad suficiente).
 
-First, run the development server:
+Objetivo
+Implementar una aplicación para la gestión de los Grupos o Secciones que se crean en cada semestre.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Requerimientos Principales
+Una interfaz para realizar el CRUD de los semestres
+Una opción que permita activar o establecer un semestre como el semestre en curso
+Debe permitir la apertura de grupos de un curso (secciones) en el semestre en curso.
+Debe permitir la definición de horarios para las secciones en los diferentes tipos de dictado considerando la cantidad de horas que se dictan por cada tipo. Los tipos de dictado básicos son TEORIA, PRACTICA y LABORATORIO.
+Debe permitir la asignación de aulas a las secciones.
+Notas
+Durante la asignación de las aulas se debe tener en cuenta que algunos grupos pueden juntarse en una misma aula, para eso utilice la tabla curso_equivalencia. Alli puede definir un curso como equivalente a otro y por lo tanto las secciones se pueden juntar en una misma aula.
+Con respecto a los horarios de un grupo, se debe permitir distribuir las horas a través de los diferentes días de la semana. Por ejemplo si un grupo tiene 4 horas de teoria estas se pueden distribuir 2 horas un LUN y 2 horas un MIE. Se debe controlar entonces que no se exceda la cantidad de horas del tipo de dictado de un curso. (deseable)
+En cuanto a los horarios de un grupo no se puede permitir que grupos que pertenecen a cursos del mismo ciclo tengan curces de horario (deseable)
+En la tabla grupo, no se ha tomado en cuenta un campo gru_iCapacidad que debería agregarse para poder comparar con la capacidad del aula para asi saber que el aula puede ser asignada al grupo o grupos. (deseable)

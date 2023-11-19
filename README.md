@@ -22,6 +22,8 @@ Implementar una aplicación para la gestión de los Grupos o Secciones que se cr
 3. En cuanto a los horarios de un grupo no se puede permitir que grupos que pertenecen a cursos del mismo ciclo tengan curces de horario (deseable)
 4. En la tabla grupo, no se ha tomado en cuenta un campo gru_iCapacidad que debería agregarse para poder comparar con la capacidad del aula para asi saber que el aula puede ser asignada al grupo o grupos. (deseable)
 
+[![Captura2.png](https://i.postimg.cc/Dy24rsrY/Captura2.png)](https://postimg.cc/Th4PGKHr)
+
 ## Tecnologías usadas
 1. React
 2. NextJs

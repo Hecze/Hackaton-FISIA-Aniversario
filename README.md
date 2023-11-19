@@ -14,7 +14,7 @@ Implementar una aplicación para la gestión de los Grupos o Secciones que se cr
 4. Debe permitir la definición de horarios para las secciones en los diferentes tipos de dictado considerando la cantidad de horas que se dictan por cada tipo. Los tipos de dictado básicos son TEORIA, PRACTICA y LABORATORIO.
 5. Debe permitir la asignación de aulas a las secciones.
 
-     [![Captura.png](https://i.postimg.cc/ZnXPR5gh/Captura.png)](https://postimg.cc/LgBgQ22y)
+                 [![Captura.png](https://i.postimg.cc/ZnXPR5gh/Captura.png)](https://postimg.cc/LgBgQ22y)
 
 ## Notas
 1. Durante la asignación de las aulas se debe tener en cuenta que algunos grupos pueden juntarse en una misma aula, para eso utilice la tabla curso_equivalencia. Alli puede definir un curso como equivalente a otro y por lo tanto las secciones se pueden juntar en una misma aula.

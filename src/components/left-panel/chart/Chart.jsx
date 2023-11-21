@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 
 import "./Chart.css";
@@ -30,6 +33,8 @@ export default function Chart() {
 
   //CODIGO NUEVO
 
+  const BASE_URL = "http://cachimbos.up.railway.app"
+
   useEffect(() => {
     loadAllCursos();
     loadSecciones();
@@ -37,12 +42,14 @@ export default function Chart() {
   }, [actualizar]); //actualizar tabla cuando se agrega o elimina una seccion
 
   useEffect(() => {
+    console.log("BASE_URL:", BASE_URL);
+    console.log(process.env);
     loadCursosMalla();
     setVisualCursos(mallaCursos);
   }, [escuelaSelected]); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
 
   async function loadAllCursos() {
-    const result = await axios.get("http://localhost:3000/api/cursos");
+    const result = await axios.get(BASE_URL +"/api/cursos");
     setAllCursos(result.data.result);
   }
 
@@ -83,7 +90,7 @@ export default function Chart() {
   }
 
   async function loadSecciones() {
-    const result = await axios.get("http://localhost:3000/api/grupos");
+    const result = await axios.get(BASE_URL + "/api/grupos");
     const allSecciones = result.data.result;
     setSecciones(allSecciones);
   }
@@ -127,7 +134,7 @@ export default function Chart() {
   async function agregarSeccion(id_curso) {
     const n_seccion = loadSeccionesCurso(id_curso).length + 1;
     try {
-      const result = await axios.post("http://localhost:3000/api/grupos", {
+      const result = await axios.post(BASE_URL + "/api/grupos", {
         id_curso: id_curso,
         gru_iNumero: n_seccion,
       });

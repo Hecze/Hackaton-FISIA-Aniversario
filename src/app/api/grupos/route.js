@@ -7,25 +7,24 @@ export async function GET() {
         return NextResponse.json({ message: "GET grupos", result });
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ message: error.message }), { status: 500};
-        
+        // Corregir el retorno aquí
+        return NextResponse.json({ message: error.message }, { status: 500 });
     }
-
 }
 
 export async function POST(request) {
-  try {
-    const { id_curso, gru_iNumero } = await request.json();
+    try {
+        const { id_curso, gru_iNumero } = await request.json();
 
-    const result = await conn.query("INSERT INTO grupo SET ?", {
-      id_curso,
-      gru_iNumero,
-    });
+        const result = await conn.query("INSERT INTO grupo SET ?", {
+            id_curso,
+            gru_iNumero,
+        });
 
-    return NextResponse.json({ message: "POST grupos", result });
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json({ message: error.message }), { status: 500};
-  }
+        return NextResponse.json({ message: "POST grupos", result });
+    } catch (error) {
+        console.log(error);
+        // Corregir el retorno aquí
+        return NextResponse.json({ message: error.message }, { status: 500 });
+    }
 }
-

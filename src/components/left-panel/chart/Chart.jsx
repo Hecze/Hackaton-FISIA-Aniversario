@@ -49,7 +49,7 @@ export default function Chart() {
   }, [escuelaSelected]); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
 
   async function loadAllCursos() {
-    const result = await axios.get(BASE_URL +"/api/cursos");
+    const result = await axios.get("/api/cursos");
     setAllCursos(result.data.result);
   }
 
@@ -90,7 +90,7 @@ export default function Chart() {
   }
 
   async function loadSecciones() {
-    const result = await axios.get(BASE_URL + "/api/grupos");
+    const result = await axios.get("/api/grupos");
     const allSecciones = result.data.result;
     setSecciones(allSecciones);
   }
@@ -134,7 +134,7 @@ export default function Chart() {
   async function agregarSeccion(id_curso) {
     const n_seccion = loadSeccionesCurso(id_curso).length + 1;
     try {
-      const result = await axios.post(BASE_URL + "/api/grupos", {
+      const result = await axios.post("/api/grupos", {
         id_curso: id_curso,
         gru_iNumero: n_seccion,
       });

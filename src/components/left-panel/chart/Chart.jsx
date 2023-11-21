@@ -148,7 +148,7 @@ export default function Chart() {
   async function eliminarSeccion(id_grupo) {
     try {
       const result = await axios.delete(
-        `http://localhost:3000/api/grupos/${id_grupo}`
+        `/api/grupos/${id_grupo}`
       );
       setActualizar(true);
     } catch (error) {

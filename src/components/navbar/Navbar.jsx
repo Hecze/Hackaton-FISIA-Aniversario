@@ -13,7 +13,6 @@ function Navbar () {
         </div>
         <li className="nav-item"><Link href="/"></Link></li>
         <li className="nav-item"><Link href="/"></Link></li>
-        <li className="nav-item"><Link href="/LabsPage"></Link></li>
         <li className="nav-item"><Link href="https://mrsquatch.github.io/Reserva-de-Espacio-FISI/"></Link></li>
         <div className="logo" id="unmsm">
         <img src="/unmsm.png" />

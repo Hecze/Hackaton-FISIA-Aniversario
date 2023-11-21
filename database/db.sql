@@ -1,6 +1,9 @@
 CREATE DATABASE IF NOT EXISTS nextmysqlcrud;
 USE nextmysqlcrud;
 
+/* para subir a railway usar: "USE railway*/
+
+
 DROP TABLE IF EXISTS escuela;
 DROP TABLE IF EXISTS Escuela;
 DROP TABLE IF EXISTS Aula;

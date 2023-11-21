@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+
 import "./Chart.css";
 
 export default function Chart({ datos }) {
@@ -142,7 +144,6 @@ export default function Chart({ datos }) {
         `http://localhost:3000/api/grupos/${id_grupo}`
       );
       setActualizar(true);
-      console.log(result.data);
     } catch (error) {
       console.error(error);
     }

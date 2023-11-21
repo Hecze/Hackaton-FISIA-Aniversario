@@ -4,7 +4,7 @@ import axios from "axios";
 
 import "./Chart.css";
 
-export default function Chart({ datos }) {
+export default function Chart() {
   //DESPLIEGUE DE CURSOS Y SECCIONES
 
   const [asignaturaSelected, setAsignaturaSelected] = useState(); // Almacena la asignatura seleccionada para mostrarla en el modal de creacion de horario

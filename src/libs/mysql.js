@@ -2,10 +2,10 @@ import mysql from 'serverless-mysql';
 
 export const conn = mysql({
     config: {
-        host: process.env.MYSQLHOST,
-        user: process.env.MYSQLUSER,
-        password: process.env.MYSQLPASSWORD,
-        port: process.env.MYSQLPORT,
-        database: process.env.MYSQLDATABASE,
+        host: viaduct.proxy.rlwy.net,
+        user: root,
+        password: a44256fD5gcd3gFdG65bcD14dEGfBDBD,
+        port: 20048,
+        database: railway,
     },
 });

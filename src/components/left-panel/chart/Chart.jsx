@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-const dotenv = require('dotenv');
-
-dotenv.config();
-
-
 import "./Chart.css";
 
 export default function Chart() {
@@ -33,25 +28,40 @@ export default function Chart() {
 
   //CODIGO NUEVO
 
-  const BASE_URL = "http://cachimbos.up.railway.app"
+
 
   useEffect(() => {
     loadAllCursos();
+  }, []); //cargar todos los cursos y secciones al inicio
+
+  useEffect(() => {
+    if(actualizar){
     loadSecciones();
     setActualizar(false);
+    }
   }, [actualizar]); //actualizar tabla cuando se agrega o elimina una seccion
 
   useEffect(() => {
-    console.log("BASE_URL:", BASE_URL);
-    console.log(process.env);
     loadCursosMalla();
     setVisualCursos(mallaCursos);
   }, [escuelaSelected]); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
 
   async function loadAllCursos() {
-    const result = await axios.get("/api/cursos");
-    setAllCursos(result.data.result);
+    try {
+      const [cursosResult, seccionesResult] = await Promise.all([
+        axios.get("/api/cursos"),
+        axios.get("/api/grupos"),
+      ]);
+  
+      setAllCursos(cursosResult.data.result);
+      setSecciones(seccionesResult.data.result);
+      console.log("Se cargaron todos los cursos y secciones");
+      setEscuelaSelected(escuelaSelected);
+    } catch (error) {
+      console.error(error);
+    }
   }
+  
 
   async function loadCursosMalla() {
     const deducir_idMalla = () => {
@@ -92,6 +102,8 @@ export default function Chart() {
   async function loadSecciones() {
     const result = await axios.get("/api/grupos");
     const allSecciones = result.data.result;
+    console.log("se cargaron todos las secciones")
+
     setSecciones(allSecciones);
   }
 

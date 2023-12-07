@@ -6,6 +6,8 @@ export default function Chart() {
   //DESPLIEGUE DE CURSOS Y SECCIONES
 
   const [asignaturaSelected, setAsignaturaSelected] = useState(); // Almacena la asignatura seleccionada para mostrarla en el modal de creacion de horario
+  const [loadingAdd, setLoadingAdd] = useState({}); // Se usa para mostrar un loading mientras se agrega una seccion
+  const [loadingDelete, setLoadingDelete] = useState({}); // Se usa para mostrar un loading mientras se elimina una seccion
 
   const [planesAñoSelected, setPlanesAñoSelected] = useState(2018); //se llama en la funcion deducir malla, almacena el estado del año seleccionado
   const [escuelaSelected, setEscuelaSelected] = useState(""); //se llama en la funcion deducir malla, almacena el estado de la escuela seleccionada
@@ -28,16 +30,14 @@ export default function Chart() {
 
   //CODIGO NUEVO
 
-
-
   useEffect(() => {
     loadAllCursos();
   }, []); //cargar todos los cursos y secciones al inicio
 
   useEffect(() => {
-    if(actualizar){
-    loadSecciones();
-    setActualizar(false);
+    if (actualizar) {
+      loadSecciones();
+      setActualizar(false);
     }
   }, [actualizar]); //actualizar tabla cuando se agrega o elimina una seccion
 
@@ -52,7 +52,7 @@ export default function Chart() {
         axios.get("/api/cursos"),
         axios.get("/api/grupos"),
       ]);
-  
+
       setAllCursos(cursosResult.data.result);
       setSecciones(seccionesResult.data.result);
       console.log("Se cargaron todos los cursos y secciones");
@@ -61,7 +61,6 @@ export default function Chart() {
       console.error(error);
     }
   }
-  
 
   async function loadCursosMalla() {
     const deducir_idMalla = () => {
@@ -102,7 +101,7 @@ export default function Chart() {
   async function loadSecciones() {
     const result = await axios.get("/api/grupos");
     const allSecciones = result.data.result;
-    console.log("se cargaron todos las secciones")
+    console.log("se cargaron todos las secciones");
 
     setSecciones(allSecciones);
   }
@@ -146,11 +145,17 @@ export default function Chart() {
   async function agregarSeccion(id_curso) {
     const n_seccion = loadSeccionesCurso(id_curso).length + 1;
     try {
+      setLoadingAdd({ [id_curso]: true });
+
       const result = await axios.post("/api/grupos", {
         id_curso: id_curso,
         gru_iNumero: n_seccion,
       });
       setActualizar(true);
+      setTimeout(() => {
+        setLoadingAdd({ [id_curso]: false });
+      }, 1100); // genera un pequeño delay porque por alguna razon se actualiza antes de que se agregue la seccion
+
       console.log("Se agregó con exito");
     } catch (error) {
       console.error(error);
@@ -159,10 +164,12 @@ export default function Chart() {
 
   async function eliminarSeccion(id_grupo) {
     try {
-      const result = await axios.delete(
-        `/api/grupos/${id_grupo}`
-      );
+      setLoadingDelete({ [id_grupo]: true });
+      const result = await axios.delete(`/api/grupos/${id_grupo}`);
       setActualizar(true);
+      setTimeout(() => {
+        setLoadingDelete({ [id_grupo]: false });
+      }, 1100); // genera un pequeño delay porque por alguna razon se actualiza antes de que se agregue la seccion
     } catch (error) {
       console.error(error);
     }
@@ -257,10 +264,12 @@ export default function Chart() {
     if (index_oficial) {
       if (actual_index == index_oficial) {
         console.log("los index son iguales");
-        return "No deberias poder estar viendo esto"
+        return "No deberias poder estar viendo esto";
       } else {
         console.log("los index son distintos", actual_index, index_oficial);
-        return (" Es " + index_oficial + " Pero Debiese ser " + actual_index + "")
+        return (
+          " Es " + index_oficial + " Pero Debiese ser " + actual_index + ""
+        );
         // Actualizar el index de la seccion mandando un PUT a la database
       }
     }
@@ -331,14 +340,10 @@ export default function Chart() {
                     <tr key={index}>
                       <td>
                         {/* Si seccion.gru_iNumero es igual a index, mostrar el segundo */}
-                        {seccion.gru_iNumero === index + 1 ? (
-                              seccion.gru_iNumero
-                        ) : (
-                          // Si no son iguales, ejecutar la función actualizarIndexSecciones
-                          actualizarIndexSeccion(index + 1, seccion)
-                      
-                        )}
-                        
+                        {seccion.gru_iNumero === index + 1
+                          ? seccion.gru_iNumero
+                          : // Si no son iguales, ejecutar la función actualizarIndexSecciones
+                            actualizarIndexSeccion(index + 1, seccion)}
                       </td>
                       <td className="desplegable">
                         <select
@@ -377,7 +382,11 @@ export default function Chart() {
                         className="delete"
                         onClick={() => eliminarSeccion(seccion.id_grupo)}
                       >
-                        <h3>x</h3>
+                        {loadingDelete[seccion.id_grupo] ? (
+                          <div className="spinner"></div>
+                        ) : (
+                          <h3>x</h3>
+                        )}
                       </td>
                     </tr>
                   )
@@ -388,7 +397,11 @@ export default function Chart() {
                   className="add-seccion"
                   onClick={() => agregarSeccion(curso.id_curso)}
                 >
-                  <h2>+</h2>
+                  {loadingAdd[curso.id_curso] ? (
+                    <div className="spinner"></div>
+                  ) : (
+                    <h3>+</h3>
+                  )}
                 </td>
                 <td colSpan="3" className="add-seccion-span"></td>
               </tr>

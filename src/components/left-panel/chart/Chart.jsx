@@ -39,8 +39,14 @@ export default function Chart() {
       loadCursosMalla();
     },
     [escuelaSelected],
-    [planesAñoSelected]
-  ); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
+  ); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ CASI ARREGLADO
+
+  useEffect(() => {
+    if (actualizar) {
+      loadSecciones();
+      setActualizar(false);
+    }
+  }, [actualizar]); //actualizar tabla cuando se agrega o elimina una seccion
 
   async function loadAllCursos() {
     try {

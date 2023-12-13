@@ -325,9 +325,134 @@ export default function Chart() {
             </div>
             <div className="modalHorario-body">
               <div className="body-top-information">
+                <h2>
                 {"Sección " + seccionInt}
+
+                </h2>
               </div>
-              <div className="schedule-creation-device"></div>
+              <div className="schedule-creation-device">
+                <table>
+                  <tr className="tb-header">
+                    <td>Dia</td>
+                    <td>Hora de Inicio</td>
+                    <td>Hora de Término</td>
+                    <td>Tipo de clase</td>
+                  </tr>
+                  <tr>
+                    <td className="select-container">
+                      <select className="select-oc">
+                        <option>Lunes</option>
+                        <option>Martes</option>
+                        <option>Miércoles</option>
+                        <option>Jueves</option>
+                        <option>Viernes</option>
+                      </select>
+                    </td>
+                    
+                    <td>
+                      <select className="select-oc">
+                        <option>8:00</option>
+                        <option>9:00</option>
+                        <option>10:00</option>
+                        <option>11:00</option>
+                        <option>12:00</option>
+                        <option>13:00</option>
+                        <option>14:00</option>
+                        <option>15:00</option>
+                        <option>16:00</option>
+                        <option>17:00</option>
+                        <option>18:00</option>
+                        <option>19:00</option>
+                        <option>20:00</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select className="select-oc">
+                        <option>9:00</option>
+                        <option>10:00</option>
+                        <option>11:00</option>
+                        <option>12:00</option>
+                        <option>13:00</option>
+                        <option>14:00</option>
+                        <option>15:00</option>
+                        <option>16:00</option>
+                        <option>17:00</option>
+                        <option>18:00</option>
+                        <option>19:00</option>
+                        <option>20:00</option>
+                        <option>21:00</option>
+                        <option>22:00</option>
+                        <option>23:00</option>
+                      </select>
+                    </td>
+
+                    <td>
+                      <select className="select-oc">
+                        <option>Teoría</option>
+                        <option>Práctica</option>
+                        <option>Laboratorio</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                  <td>
+                      <select className="select-oc">
+                        <option>Lunes</option>
+                        <option>Martes</option>
+                        <option>Miércoles</option>
+                        <option>Jueves</option>
+                        <option>Viernes</option>
+                      </select>
+                    </td>
+                  <td>
+                      <select className="select-oc">
+                        <option>8:00</option>
+                        <option>9:00</option>
+                        <option>10:00</option>
+                        <option>11:00</option>
+                        <option>12:00</option>
+                        <option>13:00</option>
+                        <option>14:00</option>
+                        <option>15:00</option>
+                        <option>16:00</option>
+                        <option>17:00</option>
+                        <option>18:00</option>
+                        <option>19:00</option>
+                        <option>20:00</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select className="select-oc">
+                        <option>9:00</option>
+                        <option>10:00</option>
+                        <option>11:00</option>
+                        <option>12:00</option>
+                        <option>13:00</option>
+                        <option>14:00</option>
+                        <option>15:00</option>
+                        <option>16:00</option>
+                        <option>17:00</option>
+                        <option>18:00</option>
+                        <option>19:00</option>
+                        <option>20:00</option>
+                        <option>21:00</option>
+                        <option>22:00</option>
+                        <option>23:00</option>
+                      </select>
+                    </td>
+
+                    <td>
+                      <select className="select-oc">
+                        <option>Teoría</option>
+                        <option>Práctica</option>
+                        <option>Laboratorio</option>
+                      </select>
+                    </td>
+                  </tr>
+              
+
+                </table>
+              </div>
             </div>
           </div>
         </div>

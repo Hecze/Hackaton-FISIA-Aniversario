@@ -259,3 +259,74 @@ td.add-seccion{
   to { transform: rotate(360deg); }
 }
 
+.body-top-information{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem 0;
+  margin-bottom: -1rem;
+
+}
+.body-top-information h2{
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: .6px;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.schedule-creation-device{
+  margin: 2.5rem;
+}
+
+.schedule-creation-device table{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.4);
+  border: 2px solid #b5abab;
+  border-top: 0;
+  
+}
+
+.schedule-creation-device table, thead, tr, th{
+  padding: .8rem 0;
+  font-size: .9rem;
+  border-collapse: collapse;
+}
+.schedule-creation-device table .tb-header td{
+  background-color: var(--var-color-red);
+  color: #fafafa;
+  padding: 1rem 0;
+  font-size: .9rem;
+  border-collapse: collapse;
+  border: 1px solid #fafafa;
+  border-top: none;
+}
+
+.schedule-creation-device td{
+  border: 1px solid var(--var--background-red);
+  text-align: center;
+  padding: 0;
+}
+
+.schedule-creation-device table .selects-container{
+  display: flex;
+  padding: 0;
+}
+
+.schedule-creation-device table .select-oc{
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+  padding: 1rem .3rem;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 0;
+  border: 1px solid #ced4da;
+}

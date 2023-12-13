@@ -7,9 +7,9 @@ export default function Chart() {
 
   const [asignaturaSelected, setAsignaturaSelected] = useState(); // Almacena la asignatura seleccionada para mostrarla en el modal de creacion de horario
   const [loadingAdd, setLoadingAdd] = useState({}); // Se usa para mostrar un loading mientras se agrega una seccion
-  const [loadingDelete, setLoadingDelete] = useState({}); // Se usa para mostrar un loading mientras se elimina una seccion
+  const [loadingDelete, setLoadingDelete] = useState({}); // Se usa para mostrar un loading mientras se elimina una
 
-  const [planesAñoSelected, setPlanesAñoSelected] = useState(2018); //se llama en la funcion deducir malla, almacena el estado del año seleccionado
+  const [planesAñoSelected, setPlanesAñoSelected] = useState(); //se llama en la funcion deducir malla, almacena el estado del año seleccionado
   const [escuelaSelected, setEscuelaSelected] = useState(""); //se llama en la funcion deducir malla, almacena el estado de la escuela seleccionada
   const [id_mallaSelected, setID_MallaSelected] = useState(1); //se deduce a partir de la escuela y el año seleccionado, se usa para filtrar los cursos de la malla seleccionada
 
@@ -34,17 +34,13 @@ export default function Chart() {
     loadAllCursos();
   }, []); //cargar todos los cursos y secciones al inicio
 
-  useEffect(() => {
-    if (actualizar) {
-      loadSecciones();
-      setActualizar(false);
-    }
-  }, [actualizar]); //actualizar tabla cuando se agrega o elimina una seccion
-
-  useEffect(() => {
-    loadCursosMalla();
-    setVisualCursos(mallaCursos);
-  }, [escuelaSelected]); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
+  useEffect(
+    () => {
+      loadCursosMalla();
+    },
+    [escuelaSelected],
+    [planesAñoSelected]
+  ); // HAY QUE ACTUALIZAR ESTO PORQUE ESTÁ RE BUGUEADO
 
   async function loadAllCursos() {
     try {
@@ -62,46 +58,85 @@ export default function Chart() {
     }
   }
 
-  async function loadCursosMalla() {
+  async function loadCursosMalla(año = planesAñoSelected) {
+    var id_mallaSelectedint = null;
+    var todas = false;
+
     const deducir_idMalla = () => {
       if (escuelaSelected == "Ingeniería de Software") {
-        if (planesAñoSelected == "2011") {
-          setID_MallaSelected(1);
-        } else if (planesAñoSelected == "2015") {
-          setID_MallaSelected(2);
-        } else if (planesAñoSelected == "2018") {
-          setID_MallaSelected(3);
-        } else if (planesAñoSelected == "2023") {
-          setID_MallaSelected(4);
+        if (año == "2011") {
+          id_mallaSelectedint = 1;
+          console.log("Software 2011,  id malla: ", id_mallaSelectedint);
+        } else if (año == "2015") {
+          id_mallaSelectedint = 2;
+          console.log("Software 2015,  id malla: ", id_mallaSelectedint);
+        } else if (año == "2018") {
+          id_mallaSelectedint = 3;
+          console.log("Software 2018,  id malla: ", id_mallaSelectedint);
+        } else if (año == "2023") {
+          id_mallaSelectedint = 4;
+          console.log("Software 2023,  id malla: ", id_mallaSelectedint);
+        } else if (año == "Todas") {
+          id_mallaSelectedint = [1, 2, 3, 4];
+          todas = true;
+          console.log("Software Todas,  id malla: ", id_mallaSelectedint);
         }
       } else if (escuelaSelected == "Ingeniería de Sistemas") {
-        if (planesAñoSelected == "2011") {
-          setID_MallaSelected(5);
-        } else if (planesAñoSelected == "2015") {
-          setID_MallaSelected(6);
-        } else if (planesAñoSelected == "2018") {
-          setID_MallaSelected(7);
-        } else if (planesAñoSelected == "2023") {
-          setID_MallaSelected(8);
+        if (año == "2011") {
+          id_mallaSelectedint = 5;
+          console.log("Sistemas 2011,  id malla: ", id_mallaSelectedint);
+        } else if (año == "2015") {
+          id_mallaSelectedint = 6;
+          console.log("Sistemas 2015,  id malla: ", id_mallaSelectedint);
+        } else if (año == "2018") {
+          id_mallaSelectedint = 7;
+          console.log("Sistemas 2018,  id malla: ", id_mallaSelectedint);
+        } else if (año == "2023") {
+          id_mallaSelectedint = 8;
+          console.log("Sistemas 2023,  id malla: ", id_mallaSelectedint);
+        } else if (año == "Todas") {
+          id_mallaSelectedint = [5, 6, 7, 8];
+          todas = true;
+          console.log("Sistemas Todas,  id malla: ", id_mallaSelectedint);
         }
       } else if (escuelaSelected == "Ciencias de la Computación") {
+        id_mallaSelectedint = null;
         setID_MallaSelected(null);
+        console.log("No hay malla para esta escuela");
+        if (año == "2023" || año == "Todas") {
+          //añadir futura malla = 9
+        }
       }
     };
 
     deducir_idMalla();
 
-    const filteredAsignaturas = allCursos.filter(
-      (asignatura) => asignatura.id_plan_estudios === id_mallaSelected
-    );
+    var filteredAsignaturas = [];
+
+    if (todas) {
+      console.log("todas las mallas");
+      filteredAsignaturas = allCursos.filter((asignatura) =>
+        id_mallaSelectedint.includes(asignatura.id_plan_estudios)
+      );
+    } else {
+      filteredAsignaturas = allCursos.filter(
+        (asignatura) => asignatura.id_plan_estudios === id_mallaSelectedint
+      );
+    }
+    setID_MallaSelected(id_mallaSelectedint);
+
+    // console.log("la malla seleccionada es: ", id_mallaSelectedint, " pero en el state está como: ", id_mallaSelected );
 
     setMallaCursos(filteredAsignaturas);
+
+    setVisualCursos(filteredAsignaturas);
   }
 
   async function loadSecciones() {
     const result = await axios.get("/api/grupos");
     const allSecciones = result.data.result;
     console.log("se cargaron todos las secciones");
+    console.log(result.data.result);
 
     setSecciones(allSecciones);
   }
@@ -131,13 +166,8 @@ export default function Chart() {
   const handleMallaChange = (e) => {
     const seleccionado = e.target.value;
 
-    if (seleccionado == "Todas") {
-      setVisualCursos(allCursos);
-    } else {
-      setPlanesAñoSelected(seleccionado); // se procederá a dedecudir
-      loadCursosMalla();
-      setVisualCursos(mallaCursos);
-    }
+    setPlanesAñoSelected(seleccionado);
+    loadCursosMalla(seleccionado);
   };
 
   const mallasOptions = [2011, 2015, 2018, 2023, "Todas"];
@@ -267,6 +297,7 @@ export default function Chart() {
         return "No deberias poder estar viendo esto";
       } else {
         console.log("los index son distintos", actual_index, index_oficial);
+        // Actualizar el index de la seccion mandando un PUT a la database
         return (
           " Es " + index_oficial + " Pero Debiese ser " + actual_index + ""
         );
